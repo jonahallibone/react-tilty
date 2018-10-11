@@ -1,6 +1,6 @@
 {
   "name": "react-tilty",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A port of Tilt.js to a React component, since non of the others seemed to work or weren't maintained. Tilt.js is not a dependency, so this will be updated independtly.",
   "main": "Tilty.js",
   "scripts": {
