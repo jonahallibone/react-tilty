@@ -6,7 +6,7 @@ class Tilty extends Component {
         
     }
 
-    componentDidMount = () => {
+    componentDidMount() {
 
         let settings = this.props.settings || {};
         
