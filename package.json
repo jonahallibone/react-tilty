@@ -1,0 +1,15 @@
+{
+  "name": "react-tiltly",
+  "version": "1.0.0",
+  "description": "A port of Tilt.js to a React component, since non of the others seemed to work or weren't maintained. Tilt.js is not a dependency, so this will be updated independtly.",
+  "main": "Tilty.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react",
+    "tilt.js"
+  ],
+  "author": "Jonah Allibone",
+  "license": "ISC"
+}
