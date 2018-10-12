@@ -1,2 +1,2 @@
 import Tilty from "./Tilty.js";
-export { Tilty };
+export default { Tilty };
