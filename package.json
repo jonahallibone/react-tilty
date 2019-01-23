@@ -1,6 +1,6 @@
 {
   "name": "react-tilty",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "A React port of the JS component tilt.js",
   "main": "build/index.js",
   "peerDependencies": {
