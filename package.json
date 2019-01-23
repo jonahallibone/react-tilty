@@ -1,17 +1,16 @@
 {
   "name": "react-tilty",
-  "version": "1.0.10",
+  "version": "1.1.3",
   "description": "A React port of the JS component tilt.js",
   "main": "build/index.js",
   "peerDependencies": {
-    "react": "^15.5.4"
+    "react": "^16.0.0"
   },
   "dependencies": {
-    "react": "^15.5.4",
+    "react": "^16.0.0",
     "webpack": "^2.6.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack --watch",
     "build": "webpack"
   },
@@ -30,6 +29,7 @@
     "type": "git",
     "url": "https://github.com/jonahallibone/react-tilty"
   },
+  "license": "MIT",
   "browserslist": [
     ">0.2%",
     "not dead",
