@@ -1,37 +1,39 @@
 {
   "name": "react-tilty",
-  "version": "1.0.8",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
+  "version": "1.0.10",
+  "description": "A React port of the JS component tilt.js",
+  "main": "build/index.js",
+  "peerDependencies": {
+    "react": "^15.5.4"
+  },
+  "dependencies": {
+    "react": "^15.5.4",
+    "webpack": "^2.6.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack --watch",
+    "build": "webpack"
+  },
+  "author": {
+    "name": "Jonah Allibone"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.5.1"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/jonahallibone/react-tilty"
-  },
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "start": "react-scripts start",
-    "build-examples": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "build": "rimraf dist && NODE_ENV=production babel src/lib --out-dir dist --copy-files --ignore __tests__,spec.js,test.js,__snapshots__"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.0.0",
-    "@babel/core": "^7.1.2",
-    "babel-core": "^7.0.0-bridge.0",
-    "babel-loader": "^8.0.4",
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2",
-    "react-scripts": "^2.0.4",
-    "rimraf": "^2.6.2"
   },
   "browserslist": [
     ">0.2%",
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ],
-  "dependencies": {}
+  ]
 }
