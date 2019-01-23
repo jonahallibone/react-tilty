@@ -29,7 +29,7 @@ export default App;
 
 ## Options
 
-Tilty has a variety of options which can be passed in either as a settings object or as properties using `data-tilt-{propertyname}`
+Tilty has a variety of options which can be passed in either as a settings object property or as properties using `data-tilt-{propertyname}`
 
 Here is a list of available options:
 ```
