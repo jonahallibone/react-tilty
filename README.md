@@ -8,7 +8,7 @@ _"A tiny requestAnimationFrame powered 60+fps lightweight parallax hover tilt ef
 
 This package is hosted on [npm](https://www.npmjs.com/package/react-tilty)
 
-`npm install react-tilty`
+`npm i react-tilty`
 
 ## How to Use
 
@@ -50,7 +50,7 @@ glare:                  false,  // if it should have a "glare" effect
                                 // you need to add .js-tilt-glare>.js-tilt-glare-inner by yourself
 ```
 
-Example:
+#### Example:
 
 ```jsx
 <Tilty
@@ -97,6 +97,6 @@ componentDidMount() {
 }
 ```
 
-## License
+### License
 
 [MIT License](./LICENSE)

@@ -172,14 +172,14 @@ class Tilty extends Component {
     prepareGlare() {
         // If option pre-render is enabled we assume all html/css is present for an optimal glare effect.
         if (!this.glarePrerender) {
-        // Create glare element
-        const jsTiltGlare = document.createElement("div");
-        jsTiltGlare.classList.add("js-tilt-glare");
+            // Create glare element
+            const jsTiltGlare = document.createElement("div");
+            jsTiltGlare.classList.add("js-tilt-glare");
 
-        const jsTiltGlareInner = document.createElement("div");
-        jsTiltGlareInner.classList.add("js-tilt-glare-inner");
+            const jsTiltGlareInner = document.createElement("div");
+            jsTiltGlareInner.classList.add("js-tilt-glare-inner");
 
-        jsTiltGlare.appendChild(jsTiltGlareInner);
+            jsTiltGlare.appendChild(jsTiltGlareInner);
             this.tilt.appendChild(jsTiltGlare);
         }
 
@@ -225,17 +225,20 @@ class Tilty extends Component {
     }
 
     setTransition() {
-        clearTimeout(this.transitionTimeout);
-        this.tilt.style.transition = this.settings.speed + "ms " + this.settings.easing;
-        if (this.glare) this.glareElement.style.transition = `opacity ${this.settings.speed}ms ${this.settings.easing}`;
-    
-        this.transitionTimeout = setTimeout(() => {
-            this.tilt.style.transition = "";
-            if (this.glare) {
-                this.glareElement.style.transition = "";
-            }
-        }, this.settings.speed);
-    
+        console.log(this.settings)
+        if (this.settings.transition) {
+            console.log("set transition");
+            clearTimeout(this.transitionTimeout);
+            this.tilt.style.transition = this.settings.speed + "ms " + this.settings.easing;
+            if (this.glare) this.glareElement.style.transition = `opacity ${this.settings.speed}ms ${this.settings.easing}`;
+        
+            this.transitionTimeout = setTimeout(() => {
+                this.tilt.style.transition = "";
+                if (this.glare) {
+                    this.glareElement.style.transition = "";
+                }
+            }, this.settings.speed);
+        }
     }
     extendSettings(settings) {
         let defaultSettings = {
