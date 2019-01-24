@@ -14,7 +14,7 @@ This package is hosted on [npm](https://www.npmjs.com/package/react-tilty)
 
 This component is imported and used like any standard React component
 
-```
+```jsx
 import React, { Component } from "react";
 import Tilty from "react-tilty";
 
@@ -60,7 +60,7 @@ settings={{
 
 Example:
 
-```
+```jsx
 <Tilty
   data-tilt-reverse="true"
   data-tilt-axis="x"
@@ -79,7 +79,7 @@ In order to add a parallax effect to the element and it's child, you must add so
 - Add `transform: translateZ(20px)` to your child element (this pixel value can be increased to cause the child element to feel more separated)
 
 
-```
+```jsx
 <Tilty
   style={{
     transformStyle: "preserve-3d"
@@ -96,7 +96,7 @@ In order to add a parallax effect to the element and it's child, you must add so
 
 You can add an event listener to the component's `tiltChange` event in order to access it's x and y tilts, percentages, and overall angle
 
-```
+```jsx
 componentDidMount() {
   const tilt = document.querySelector('#tilty');
   tilt.addEventListener("tiltChange", e => {
