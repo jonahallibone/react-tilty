@@ -1,6 +1,8 @@
 # react-tilty
 
-A React port of the [vanilla-tilt](https://github.com/micku7zu/vanilla-tilt.js) version of [Tilt.js](https://github.com/gijsroge/tilt.js)
+A React port of the [vanilla-tilt.js](https://micku7zu.github.io/vanilla-tilt.js/index.html) version of [Tilt.js](http://gijsroge.github.io/tilt.js/)
+
+It is a tiny 3D tilt javascript library powered by requestAnimationFrame
 
 ## Installation
 
@@ -10,7 +12,7 @@ This package is hosted on npm
 
 ## How to Use
 
-This component is imported as a React component
+This component is imported and used like any standard React component
 
 ```
 import React, { Component } from "react";
@@ -29,11 +31,11 @@ export default App;
 
 ## Options
 
-Tilty has a variety of options which can be passed in either as a settings object property or as properties using `data-tilt-{propertyname}`
+Tilty has a variety of options which can be passed in either as a settings object prop or as individual properties using `data-tilt-{propertyname}`
 
-Here is a list of available options:
+Here is a list of available options with their defaults:
 ```
-{
+settings={{
     reverse:                false,  // reverse the tilt direction
     max:                    35,     // max tilt rotation (degrees)
     perspective:            1000,   // Transform perspective, the lower the more extreme the tilt gets.
@@ -53,6 +55,60 @@ Here is a list of available options:
     gyroscopeMaxAngleX:     45,      // This is the top limit of the device angle on X axis, meaning that a device rotated at this angle would tilt the element as if the mouse was on the right border of the element;
     gyroscopeMinAngleY:     -45,     // This is the bottom limit of the device angle on Y axis, meaning that a device rotated at this angle would tilt the element as if the mouse was on the top border of the element;
     gyroscopeMaxAngleY:     45      // This is the top limit of the device angle on Y axis, meaning that a device rotated at this angle would tilt the element as if the mouse was on the bottom border of the element;
+}}
+```
+
+Example:
+
+```
+<Tilty
+  data-tilt-reverse="true"
+  data-tilt-axis="x"
+  settings = {{
+    scale: 1.2,
+    perspective: 900,
+    reset: false
+  }}>
+</Tilty>
+```
+
+### Creating a Parallax Effect
+
+In order to add a parallax effect to the element and it's child, you must add some css properties to them:
+- Add `transform-style: preserve-3d` to your tilt element
+- Add `transform: translateZ(20px)` to your child element (this pixel value can be increased to cause the child element to feel more separated)
+
+
+```
+<Tilty
+  style={{
+    transformStyle: "preserve-3d"
+  }}>
+  <div
+    style={{
+      transform: "translateZ(30px)"
+    }}>
+  </div>
+</Tilty>
+```
+
+### Tilt Change Event
+
+You can add an event listener to the component's `tiltChange` event in order to access it's x and y tilts, percentages, and overall angle
+
+```
+componentDidMount() {
+  const tilt = document.querySelector('#tilty');
+  tilt.addEventListener("tiltChange", e => {
+    console.log(e.detail);
+    // {
+    //   tiltX: "-4.90",
+    //   tiltY: "3.03",
+    //   percentageX: 64,
+    //   percentageY: 58.666,
+    //   angle: 121.751281
+    // }
+  });
 }
 ```
 
