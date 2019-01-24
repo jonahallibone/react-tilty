@@ -50,7 +50,7 @@ glare:                  false,  // if it should have a "glare" effect
                                 // you need to add .js-tilt-glare>.js-tilt-glare-inner by yourself
 ```
 
-#### Example:
+**Example:**
 
 ```jsx
 <Tilty

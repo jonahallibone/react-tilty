@@ -225,9 +225,7 @@ class Tilty extends Component {
     }
 
     setTransition() {
-        console.log(this.settings)
         if (this.settings.transition) {
-            console.log("set transition");
             clearTimeout(this.transitionTimeout);
             this.tilt.style.transition = this.settings.speed + "ms " + this.settings.easing;
             if (this.glare) this.glareElement.style.transition = `opacity ${this.settings.speed}ms ${this.settings.easing}`;
