@@ -34,7 +34,7 @@ export default App;
 Tilty has a variety of options which can be passed in either as a settings object prop or as individual properties using `data-tilt-{propertyname}`
 
 Here is a list of available options with their defaults:
-```
+```jsx
 settings={{
     reverse:                false,  // reverse the tilt direction
     max:                    35,     // max tilt rotation (degrees)
