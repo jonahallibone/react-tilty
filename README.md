@@ -1,5 +1,7 @@
 # react-tilty
 
+[![npm version](https://badge.fury.io/js/react-tilty.svg)](https://badge.fury.io/js/react-tilty)
+
 A React port of the [vanilla-tilt.js](https://micku7zu.github.io/vanilla-tilt.js/index.html) version of [Tilt.js](http://gijsroge.github.io/tilt.js/)
 
 _"A tiny requestAnimationFrame powered 60+fps lightweight parallax hover tilt effect for **React**"_
