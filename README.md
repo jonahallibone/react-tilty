@@ -6,7 +6,7 @@ It is a tiny 3D tilt javascript library powered by requestAnimationFrame
 
 ## Installation
 
-This package is hosted on npm
+This package is hosted on [npm](https://www.npmjs.com/package/react-tilty)
 
 `npm install react-tilty`
 
