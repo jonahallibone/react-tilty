@@ -1,6 +1,6 @@
 {
   "name": "react-tilty",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "A React port of the JS component tilt.js",
   "main": "build/index.js",
   "peerDependencies": {
@@ -24,7 +24,11 @@
     "tilty",
     "tilt.js",
     "tilty.js",
-    "vanilla-tilt"
+    "vanilla-tilt",
+    "react.js",
+    "react-tilt",
+    "react-tilty",
+    "react-tilt.js"
   ],
   "devDependencies": {
     "babel-cli": "^6.24.1",
@@ -38,11 +42,5 @@
     "type": "git",
     "url": "https://github.com/jonahallibone/react-tilty"
   },
-  "license": "MIT",
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "license": "MIT"
 }
