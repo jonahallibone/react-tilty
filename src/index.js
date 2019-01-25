@@ -25,13 +25,13 @@ class Tilty extends Component {
     
         this.glare = this.isSettingTrue(this.settings.glare);
         this.glarePrerender = this.isSettingTrue(this.settings["glare-prerender"]);
+        this.gyroscope = this.isSettingTrue(this.settings.gyroscope);
     
         if (this.glare) {
-          this.prepareGlare();
+            this.prepareGlare();
         }
         
         this.addEventListeners();
-        
     }
 
     isSettingTrue(setting) {
@@ -43,19 +43,24 @@ class Tilty extends Component {
         this.onMouseMoveBind = this.onMouseMove.bind(this);
         this.onMouseLeaveBind = this.onMouseLeave.bind(this);
         this.onWindowResizeBind = this.onWindowResizeBind.bind(this);
+        this.onDeviceOrientationBind = this.onDeviceOrientation.bind(this);
     
         this.tilt.addEventListener("mouseenter", this.onMouseEnterBind);
         this.tilt.addEventListener("mousemove", this.onMouseMoveBind);
         this.tilt.addEventListener("mouseleave", this.onMouseLeaveBind);
         if (this.glare) {
-          window.addEventListener("resize", this.onWindowResizeBind);
+            window.addEventListener("resize", this.onWindowResizeBind);
+        }
+
+        if (this.gyroscope) {
+            window.addEventListener("deviceorientation", this.onDeviceOrientationBind);
         }
     }
 
     componentWillUnmount() {
         clearTimeout(this.transitionTimeout);
         if (this.updateCall !== null) {
-          cancelAnimationFrame(this.updateCall);
+            cancelAnimationFrame(this.updateCall);
         }
     
         this.reset();
@@ -71,10 +76,46 @@ class Tilty extends Component {
         this.tilt.removeEventListener("mouseenter", this.onMouseEnterBind);
         this.tilt.removeEventListener("mousemove", this.onMouseMoveBind);
         this.tilt.removeEventListener("mouseleave", this.onMouseLeaveBind);
+
         if (this.glare) {
-          window.removeEventListener("resize", this.onWindowResizeBind);
+            window.removeEventListener("resize", this.onWindowResizeBind);
+        }
+
+        if (this.gyroscope) {
+            window.removeEventListener("deviceorientation", this.onDeviceOrientationBind);
         }
     }
+
+    onDeviceOrientation(event) {
+        if (event.gamma === null || event.beta === null) {
+            return;
+        }
+    
+        this.updateElementPosition();
+    
+        const totalAngleX = this.settings.gyroscopeMaxAngleX - this.settings.gyroscopeMinAngleX;
+        const totalAngleY = this.settings.gyroscopeMaxAngleY - this.settings.gyroscopeMinAngleY;
+        
+        const degreesPerPixelX = totalAngleX / this.width;
+        const degreesPerPixelY = totalAngleY / this.height;
+    
+        const angleX = event.gamma - this.settings.gyroscopeMinAngleX;
+        const angleY = event.beta - this.settings.gyroscopeMinAngleY;
+    
+        const posX = angleX / degreesPerPixelX;
+        const posY = angleY / degreesPerPixelY;
+    
+        if (this.updateCall !== null) {
+            cancelAnimationFrame(this.updateCall);
+        }
+    
+        this.event = {
+            clientX: posX + this.left,
+            clientY: posY + this.top,
+        };
+    
+        this.updateCall = requestAnimationFrame(this.updateBind);
+      }
 
     onMouseEnter(event) {
         this.updateElementPosition();
@@ -251,7 +292,12 @@ class Tilty extends Component {
             glare: false,
             "max-glare": 1,
             "glare-prerender": false,
-            reset: true
+            reset: true,
+            gyroscope: true,
+            gyroscopeMinAngleX: -45,
+            gyroscopeMaxAngleX: 45,
+            gyroscopeMinAngleY: -45,
+            gyroscopeMaxAngleY: 45,
         };
     
         let newSettings = {};
