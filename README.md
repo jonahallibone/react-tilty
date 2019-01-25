@@ -23,7 +23,9 @@ import Tilty from "react-tilty";
 class App extends Component {
   render() {
     return (
+      <div class="App">
         <Tilty></Tilty>
+      </div>
     );
   }
 }
