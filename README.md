@@ -106,6 +106,11 @@ componentDidMount() {
 }
 ```
 
+### Attributions
+
+- [tilt.js](https://github.com/gijsroge/tilt.js) created by [Gijs Rogé](https://github.com/gijsroge)
+- [vanilla-tilt.js](https://github.com/micku7zu/vanilla-tilt.js) created by [Șandor Sergiu](https://github.com/micku7zu)
+
 ### License
 
 [MIT License](./LICENSE)
