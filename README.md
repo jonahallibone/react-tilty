@@ -6,6 +6,8 @@ A React port of the [vanilla-tilt.js](https://micku7zu.github.io/vanilla-tilt.js
 
 _"A tiny requestAnimationFrame powered 60+fps lightweight parallax hover tilt effect for **React**"_
 
+Check out a simple demo [here!](https://codesandbox.io/s/73rqoq599j?fontsize=14)
+
 ## Installation
 
 This package is hosted on [npm](https://www.npmjs.com/package/react-tilty)
