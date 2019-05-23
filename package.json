@@ -3,9 +3,6 @@
   "version": "1.3.0",
   "description": "A React port of the JS component tilt.js",
   "main": "dist/index.js",
-  "publishConfig": {
-    "access": "restricted"
-  },
   "peerDependencies": {
     "react": ">=16.0.0"
   },
@@ -30,14 +27,15 @@
     "react-tilt.js"
   ],
   "devDependencies": {
-    "react": ">=16.0.0",
-    "webpack": "^2.6.1",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",
-    "babel-preset-env": "^1.5.1"
+    "babel-preset-env": "^1.5.1",
+    "react": "^16.8.6",
+    "webpack": "^4.0.0",
+    "webpack-cli": "^3.3.2"
   },
   "repository": {
     "type": "git",
