@@ -1,9 +1,11 @@
-# react-tilty
+react-tilty
+===========
 
-[![npm version](https://badge.fury.io/js/react-tilty.svg)](https://www.npmjs.com/package/react-tilty)
-[![npm downloads](https://badgen.net/npm/dt/react-tilty)](https://www.npmjs.com/package/react-tilty)
-![npm version](https://badgen.net/bundlephobia/minzip/react-tilty)
-[![npm downloads](https://badgen.net/npm/license/react-tilty)](./LICENSE)
+[![npm version][npm-badge]][npm-url]
+[![npm downloads][downloads-badge]][npm-url]
+[![dependencies Status][dependencies-badge]][npm-url]
+[![npm bundle size][size-badge]][npm-url]
+[![npm downloads][license-badge]][license-url]
 
 
 A React port of the [vanilla-tilt.js](https://micku7zu.github.io/vanilla-tilt.js/index.html) version of [Tilt.js](http://gijsroge.github.io/tilt.js/)
@@ -120,3 +122,14 @@ componentDidMount() {
 ### License
 
 [MIT License](./LICENSE)
+
+
+
+[npm-url]:https://www.npmjs.com/package/react-tilty
+[license-url]:./LICENSE
+
+[npm-badge]:https://badge.fury.io/js/react-tilty.svg
+[downloads-badge]:https://badgen.net/npm/dt/react-tilty
+[size-badge]:https://img.shields.io/bundlephobia/minzip/react-tilty.svg
+[dependencies-badge]:https://david-dm.org/jonahallibone/react-tilty/status.svg
+[license-badge]:https://badgen.net/npm/license/react-tilty
