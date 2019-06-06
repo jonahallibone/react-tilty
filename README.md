@@ -1,6 +1,10 @@
 # react-tilty
 
-[![npm version](https://badge.fury.io/js/react-tilty.svg)](https://badge.fury.io/js/react-tilty)
+[![npm version](https://badge.fury.io/js/react-tilty.svg)](https://www.npmjs.com/package/react-tilty)
+[![npm downloads](https://badgen.net/npm/dt/react-tilty)](https://www.npmjs.com/package/react-tilty)
+![npm version](https://badgen.net/bundlephobia/minzip/react-tilty)
+[![npm downloads](https://badgen.net/npm/license/react-tilty)](./LICENSE)
+
 
 A React port of the [vanilla-tilt.js](https://micku7zu.github.io/vanilla-tilt.js/index.html) version of [Tilt.js](http://gijsroge.github.io/tilt.js/)
 

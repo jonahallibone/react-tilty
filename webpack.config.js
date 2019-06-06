@@ -4,11 +4,6 @@ const libraryName= pkg.name;
 
 module.exports = {
   entry: path.join(__dirname, "./src/index.js"),
-  // output: {
-  //   path: path.resolve(__dirname, 'build'),
-  //   filename: 'index.js',
-  //   libraryTarget: 'commonjs2' // THIS IS THE MOST IMPORTANT LINE! :mindblow: I wasted more than 2 days until realize this was the line most important in all this guide.
-  // },
   output: {      
     path: path.join(__dirname, './dist'),      
     filename: 'index.js',
@@ -31,17 +26,15 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['env']
+            presets: [
+              ['@babel/preset-env']
+            ]
           }
         }
       }
     ]
   },
-  // externals: {
-  //   'react': 'commonjs react' // this line is just to use the React dependency of our parent-testing-project instead of using our own React.
-  // }
-  externals: {      
-    // Don't bundle react or react-dom      
+  externals: {           
     react: {          
         commonjs: "react",          
         commonjs2: "react",          
