@@ -48,11 +48,11 @@ class Tilty extends Component {
         this.tilt.addEventListener("mouseenter", this.onMouseEnterBind);
         this.tilt.addEventListener("mousemove", this.onMouseMoveBind);
         this.tilt.addEventListener("mouseleave", this.onMouseLeaveBind);
-        if (this.glare) {
+        if (this.glare && (typeof window !== 'undefined')) {
             window.addEventListener("resize", this.onWindowResizeBind);
         }
 
-        if (this.gyroscope) {
+        if (this.gyroscope && (typeof window !== 'undefined')) {
             window.addEventListener("deviceorientation", this.onDeviceOrientationBind);
         }
     }
@@ -77,11 +77,11 @@ class Tilty extends Component {
         this.tilt.removeEventListener("mousemove", this.onMouseMoveBind);
         this.tilt.removeEventListener("mouseleave", this.onMouseLeaveBind);
 
-        if (this.glare) {
+        if (this.glare && (typeof window !== 'undefined')) {
             window.removeEventListener("resize", this.onWindowResizeBind);
         }
 
-        if (this.gyroscope) {
+        if (this.gyroscope && (typeof window !== 'undefined')) {
             window.removeEventListener("deviceorientation", this.onDeviceOrientationBind);
         }
     }
