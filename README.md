@@ -1,10 +1,18 @@
-# react-tilty
+react-tilty
+===========
 
-[![npm version](https://badge.fury.io/js/react-tilty.svg)](https://badge.fury.io/js/react-tilty)
+[![npm version][npm-badge]][npm-url]
+[![npm downloads][downloads-badge]][npm-url]
+[![dependencies Status][dependencies-badge]][npm-url]
+[![npm bundle size][size-badge]][npm-url]
+[![npm downloads][license-badge]][license-url]
+
 
 A React port of the [vanilla-tilt.js](https://micku7zu.github.io/vanilla-tilt.js/index.html) version of [Tilt.js](http://gijsroge.github.io/tilt.js/)
 
 _"A tiny requestAnimationFrame powered 60+fps lightweight parallax hover tilt effect for **React**"_
+
+Check out a simple demo [here!](https://codesandbox.io/s/73rqoq599j?fontsize=14)
 
 ## Installation
 
@@ -106,6 +114,22 @@ componentDidMount() {
 }
 ```
 
+### Attributions
+
+- [tilt.js](https://github.com/gijsroge/tilt.js) created by [Gijs Rogé](https://github.com/gijsroge)
+- [vanilla-tilt.js](https://github.com/micku7zu/vanilla-tilt.js) created by [Șandor Sergiu](https://github.com/micku7zu)
+
 ### License
 
 [MIT License](./LICENSE)
+
+
+
+[npm-url]:https://www.npmjs.com/package/react-tilty
+[license-url]:./LICENSE
+
+[npm-badge]:https://badge.fury.io/js/react-tilty.svg
+[downloads-badge]:https://badgen.net/npm/dt/react-tilty
+[size-badge]:https://img.shields.io/bundlephobia/minzip/react-tilty.svg
+[dependencies-badge]:https://david-dm.org/jonahallibone/react-tilty/status.svg
+[license-badge]:https://badgen.net/npm/license/react-tilty
