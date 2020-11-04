@@ -1,1 +1,31 @@
-{ "extends": "react-app" }
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "node": true
+  },
+  "globals": {
+    "window": true
+  },
+  "extends": [
+    "airbnb",
+    "airbnb/hooks",
+    "prettier",
+    "prettier/react"
+  ],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "rules": {
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [".js", ".jsx"]
+      }
+    ],
+    "react/prop-types": "off"
+  }
+}

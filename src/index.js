@@ -1,336 +1,303 @@
-import React, { Component } from 'react';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useLayoutEffect,
+  useCallback,
+} from 'react';
 
-class Tilty extends Component {
-    constructor(props) {
-        super(props);
+function Tilty({
+  style = {},
+  className = '',
+  reverse = false,
+  max = 35,
+  perspective = 1000,
+  easing = 'cubic-bezier(.03,.98,.52,.99)',
+  scale = 1,
+  speed = 300,
+  axis = '',
+  reset = true,
+  glare = false,
+  maxGlare = 1,
+  glareStyle = {},
+  gyroscope = true,
+  gyroscopeMinAngleX = -45,
+  gyroscopeMaxAngleX = 45,
+  gyroscopeMinAngleY = -45,
+  gyroscopeMaxAngleY = 45,
+  onMouseEnter = () => {},
+  onMouseMove = () => {},
+  onMouseLeave = () => {},
+  children,
+}) {
+  // VARIABLES
+  const [styleState, setStyle] = useState({
+    position: 'relative',
+    willChange: 'transform',
+  });
+  const [glareStyleState, setGlareStyle] = useState({
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    pointerEvents: 'none',
+    backgroundImage: `linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%)`,
+    transform: 'rotate(180deg) translate(-50%, -50%)',
+    transformOrigin: '0% 0%',
+    opacity: '0',
+  });
+
+  const width = useRef(0);
+  const height = useRef(0);
+  const left = useRef(0);
+  const top = useRef(0);
+  const transitionTimeout = useRef(null);
+  const updateCall = useRef(null);
+  const reverseNum = reverse ? 1 : -1;
+
+  const element = useRef(null);
+
+  // UNMOUNT
+  useEffect(() => {
+    return () => {
+      clearTimeout(transitionTimeout.current);
+      window.cancelAnimationFrame(updateCall.current);
+    };
+  }, []);
+
+  // GLARE
+  useEffect(() => {
+    if (!glare) {
+      return () => {};
     }
 
-    componentDidMount() {
+    const updateGlareSize = () => {
+      setGlareStyle((prevGlareStyle) => ({
+        ...prevGlareStyle,
+        width: element.current.offsetWidth * 2,
+        height: element.current.offsetWidth * 2,
+      }));
+    };
 
-        let settings = this.props.settings || {};
-        
-        this.width = null;
-        this.height = null;
-        this.left = null;
-        this.top = null;
-        this.transitionTimeout = null;
-        this.updateCall = null;
-    
-        this.updateBind = this.update.bind(this);
-        this.resetBind = this.reset.bind(this);
-    
-        this.settings = this.extendSettings(settings);
-    
-        this.reverse = this.settings.reverse ? -1 : 1;
-    
-        this.glare = this.isSettingTrue(this.settings.glare);
-        this.glarePrerender = this.isSettingTrue(this.settings["glare-prerender"]);
-        this.gyroscope = this.isSettingTrue(this.settings.gyroscope);
-    
-        if (this.glare) {
-            this.prepareGlare();
-        }
-        
-        this.addEventListeners();
-    }
+    window.addEventListener('resize', updateGlareSize);
 
-    isSettingTrue(setting) {
-        return setting === "" || setting === true || setting === 1;
-    }
+    return () => {
+      window.removeEventListener('resize', updateGlareSize);
+    };
+  }, [glare]);
 
-    addEventListeners() {
-        this.onMouseEnterBind = this.onMouseEnter.bind(this);
-        this.onMouseMoveBind = this.onMouseMove.bind(this);
-        this.onMouseLeaveBind = this.onMouseLeave.bind(this);
-        this.onWindowResizeBind = this.onWindowResizeBind.bind(this);
-        this.onDeviceOrientationBind = this.onDeviceOrientation.bind(this);
-    
-        this.tilt.addEventListener("mouseenter", this.onMouseEnterBind);
-        this.tilt.addEventListener("mousemove", this.onMouseMoveBind);
-        this.tilt.addEventListener("mouseleave", this.onMouseLeaveBind);
-        if (this.glare) {
-            window.addEventListener("resize", this.onWindowResizeBind);
-        }
+  useLayoutEffect(() => {
+    setGlareStyle((prevGlareStyle) => ({
+      ...prevGlareStyle,
+      width: element.current.offsetWidth * 2,
+      height: element.current.offsetWidth * 2,
+    }));
+  }, []);
 
-        if (this.gyroscope) {
-            window.addEventListener("deviceorientation", this.onDeviceOrientationBind);
-        }
-    }
+  // TILT FUNCTIONS
+  const updateElementPosition = () => {
+    const rect = element.current.getBoundingClientRect();
+    width.current = element.current.offsetWidth;
+    height.current = element.current.offsetHeight;
+    left.current = rect.left;
+    top.current = rect.top;
+  };
 
-    componentWillUnmount() {
-        clearTimeout(this.transitionTimeout);
-        if (this.updateCall !== null) {
-            cancelAnimationFrame(this.updateCall);
-        }
-    
-        this.reset();
-    
-        this.removeEventListeners();
-        this.tilt.vanillaTilt = null;
-        delete this.tilt.vanillaTilt;
-    
-        this.tilt = null;
-    }
+  const getValues = useCallback(
+    (e) => {
+      let x = (e.nativeEvent.clientX - left.current) / width.current;
+      let y = (e.nativeEvent.clientY - top.current) / height.current;
 
-    removeEventListeners() {
-        this.tilt.removeEventListener("mouseenter", this.onMouseEnterBind);
-        this.tilt.removeEventListener("mousemove", this.onMouseMoveBind);
-        this.tilt.removeEventListener("mouseleave", this.onMouseLeaveBind);
+      x = Math.min(Math.max(x, 0), 1);
+      y = Math.min(Math.max(y, 0), 1);
 
-        if (this.glare) {
-            window.removeEventListener("resize", this.onWindowResizeBind);
-        }
+      const tiltX = (reverseNum * (max / 2 - x * max)).toFixed(2);
+      const tiltY = (reverseNum * (y * max - max / 2)).toFixed(2);
 
-        if (this.gyroscope) {
-            window.removeEventListener("deviceorientation", this.onDeviceOrientationBind);
-        }
-    }
+      const percentageX = x * 100;
+      const percentageY = y * 100;
 
-    onDeviceOrientation(event) {
-        if (event.gamma === null || event.beta === null) {
-            return;
-        }
-    
-        this.updateElementPosition();
-    
-        const totalAngleX = this.settings.gyroscopeMaxAngleX - this.settings.gyroscopeMinAngleX;
-        const totalAngleY = this.settings.gyroscopeMaxAngleY - this.settings.gyroscopeMinAngleY;
-        
-        const degreesPerPixelX = totalAngleX / this.width;
-        const degreesPerPixelY = totalAngleY / this.height;
-    
-        const angleX = event.gamma - this.settings.gyroscopeMinAngleX;
-        const angleY = event.beta - this.settings.gyroscopeMinAngleY;
-    
-        const posX = angleX / degreesPerPixelX;
-        const posY = angleY / degreesPerPixelY;
-    
-        if (this.updateCall !== null) {
-            cancelAnimationFrame(this.updateCall);
-        }
-    
-        this.event = {
-            clientX: posX + this.left,
-            clientY: posY + this.top,
-        };
-    
-        this.updateCall = requestAnimationFrame(this.updateBind);
+      return {
+        tiltX,
+        tiltY,
+        percentageX,
+        percentageY,
+      };
+    },
+    [max, reverseNum]
+  );
+
+  const update = useCallback(
+    (e) => {
+      const values = getValues(e);
+
+      setStyle((prevStyle) => ({
+        ...prevStyle,
+        transform: `perspective(${perspective}px) rotateX(${
+          axis.toLowerCase() === 'x' ? 0 : values.tiltY
+        }deg) rotateY(${
+          axis.toLowerCase() === 'y' ? 0 : values.tiltX
+        }deg) scale3d(${scale}, ${scale}, ${scale})`,
+      }));
+
+      if (glare) {
+        setGlareStyle((prevGlareStyle) => ({
+          ...prevGlareStyle,
+          transform: `rotate(${values.angle}deg) translate(-50%, -50%)`,
+          opacity: (values.percentageY * maxGlare) / 100,
+        }));
       }
 
-    onMouseEnter(event) {
-        this.updateElementPosition();
-        this.tilt.style.willChange = "transform";
-        this.setTransition();
-    }
-    
-    onMouseMove(event) {
-        if (this.updateCall !== null) {
-          cancelAnimationFrame(this.updateCall);
-        }
-    
-        this.event = event;
-        this.updateCall = requestAnimationFrame(this.updateBind);
-    }
-    
-    onMouseLeave(event) {
-        this.setTransition();
-    
-        if (this.settings.reset) {
-          requestAnimationFrame(this.resetBind);
-        }
-    }
+      updateCall.current = null;
+    },
+    [axis, getValues, glare, maxGlare, perspective, scale]
+  );
 
-    reset() {
-        this.event = {
-          pageX: this.left + this.width / 2,
-          pageY: this.top + this.height / 2
-        };
-    
-        this.tilt.style.transform = "perspective(" + this.settings.perspective + "px) " +
-          "rotateX(0deg) " +
-          "rotateY(0deg) " +
-          "scale3d(1, 1, 1)";
-    
-        if (this.glare) {
-          this.glareElement.style.transform = 'rotate(180deg) translate(-50%, -50%)';
-          this.glareElement.style.opacity = '0';
-        }
-    }
+  const setTransition = () => {
+    clearTimeout(transitionTimeout.current);
 
-    getValues() {
-        let x = (this.event.clientX - this.left) / this.width;
-        let y = (this.event.clientY - this.top) / this.height;
-    
-        x = Math.min(Math.max(x, 0), 1);
-        y = Math.min(Math.max(y, 0), 1);
-    
-        let tiltX = (this.reverse * (this.settings.max / 2 - x * this.settings.max)).toFixed(2);
-        let tiltY = (this.reverse * (y * this.settings.max - this.settings.max / 2)).toFixed(2);
-        let angle = Math.atan2(this.event.clientX - (this.left + this.width / 2), -(this.event.clientY - (this.top + this.height / 2))) * (180 / Math.PI);
-    
-        return {
-            tiltX: tiltX,
-            tiltY: tiltY,
-            percentageX: x * 100,
-            percentageY: y * 100,
-            angle: angle
-        };
-    }
+    setStyle((prevStyle) => ({
+      ...prevStyle,
+      transition: `${speed}ms ${easing}`,
+    }));
 
-    updateElementPosition() {
-        let rect = this.tilt.getBoundingClientRect();
-    
-        this.width = this.tilt.offsetWidth;
-        this.height = this.tilt.offsetHeight;
-        this.left = rect.left;
-        this.top = rect.top;
-    }
+    transitionTimeout.current = setTimeout(() => {
+      setStyle((prevStyle) => ({
+        ...prevStyle,
+        transition: '',
+      }));
+    }, speed);
+  };
 
-    update() {
-        let values = this.getValues();
-    
-        this.tilt.style.transform = "perspective(" + this.settings.perspective + "px) " +
-            "rotateX(" + (this.settings.axis === "x" ? 0 : values.tiltY) + "deg) " +
-            "rotateY(" + (this.settings.axis === "y" ? 0 : values.tiltX) + "deg) " +
-            "scale3d(" + this.settings.scale + ", " + this.settings.scale + ", " + this.settings.scale + ")";
-    
-        if (this.glare) {
-            this.glareElement.style.transform = `rotate(${values.angle}deg) translate(-50%, -50%)`;
-            this.glareElement.style.opacity = `${values.percentageY * this.settings["max-glare"] / 100}`;
-        }
-    
-        this.tilt.dispatchEvent(new CustomEvent("tiltChange", {
-            "detail": values
+  const handleReset = () => {
+    window.requestAnimationFrame(() => {
+      setStyle((prevStyle) => ({
+        ...prevStyle,
+        transform: `perspective(${perspective}px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`,
+      }));
+
+      if (glare) {
+        setGlareStyle((prevGlareStyle) => ({
+          ...prevGlareStyle,
+          transform: 'rotate(180deg) translate(-50%, -50%)',
+          opacity: 0,
         }));
-    
-        this.updateCall = null;
+      }
+    });
+  };
+
+  // MOUSE EVENTS
+  const handleMouseEnter = (e) => {
+    updateElementPosition();
+    setTransition();
+    return onMouseEnter(e);
+  };
+
+  const handleMouseMove = (e) => {
+    e.persist();
+    if (updateCall.current !== null) {
+      window.cancelAnimationFrame(updateCall.current);
+    }
+    updateCall.current = requestAnimationFrame(() => update(e));
+    return onMouseMove(e);
+  };
+
+  const handleMouseLeave = (e) => {
+    setTransition();
+
+    if (reset) {
+      handleReset();
     }
 
-    /**
-    * Appends the glare element (if glarePrerender equals false)
-    * and sets the default style
-    */
-    prepareGlare() {
-        // If option pre-render is enabled we assume all html/css is present for an optimal glare effect.
-        if (!this.glarePrerender) {
-            // Create glare element
-            const jsTiltGlare = document.createElement("div");
-            jsTiltGlare.classList.add("js-tilt-glare");
+    return onMouseLeave(e);
+  };
 
-            const jsTiltGlareInner = document.createElement("div");
-            jsTiltGlareInner.classList.add("js-tilt-glare-inner");
-
-            jsTiltGlare.appendChild(jsTiltGlareInner);
-            this.tilt.appendChild(jsTiltGlare);
-        }
-
-        this.glareElementWrapper = this.tilt.querySelector(".js-tilt-glare");
-        this.glareElement = this.tilt.querySelector(".js-tilt-glare-inner");
-
-        if (this.glarePrerender) {
-            return;
-        }
-
-        Object.assign(this.glareElementWrapper.style, {
-            "position": "absolute",
-            "top": "0",
-            "left": "0",
-            "width": "100%",
-            "height": "100%",
-            "overflow": "hidden"
-        });
-
-        Object.assign(this.glareElement.style, {
-            'position': 'absolute',
-            'top': '50%',
-            'left': '50%',
-            'pointer-events': 'none',
-            'background-image': `linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%)`,
-            'width': `${this.tilt.offsetWidth * 2}px`,
-            'height': `${this.tilt.offsetWidth * 2}px`,
-            'transform': 'rotate(180deg) translate(-50%, -50%)',
-            'transform-origin': '0% 0%',
-            'opacity': '0',
-        });
+  // DEVICE GYROSCOPE TILTING
+  useEffect(() => {
+    if (!gyroscope) {
+      return () => {};
     }
 
-    updateGlareSize() {
-        Object.assign(this.glareElement.style, {
-          'width': `${this.tilt.offsetWidth * 2}`,
-          'height': `${this.tilt.offsetWidth * 2}`,
-        });
-    }
-    
-    onWindowResizeBind() {
-        this.updateGlareSize();
-    }
+    const onDeviceOrientation = (e) => {
+      if (e.gamma === null || e.beta === null) {
+        return;
+      }
 
-    setTransition() {
-        if (this.settings.transition) {
-            clearTimeout(this.transitionTimeout);
-            this.tilt.style.transition = this.settings.speed + "ms " + this.settings.easing;
-            if (this.glare) this.glareElement.style.transition = `opacity ${this.settings.speed}ms ${this.settings.easing}`;
-        
-            this.transitionTimeout = setTimeout(() => {
-                this.tilt.style.transition = "";
-                if (this.glare) {
-                    this.glareElement.style.transition = "";
-                }
-            }, this.settings.speed);
-        }
-    }
-    extendSettings(settings) {
-        let defaultSettings = {
-            reverse: false,
-            max: 35,
-            perspective: 1000,
-            easing: "cubic-bezier(.03,.98,.52,.99)",
-            scale: "1",
-            speed: "300",
-            transition: true,
-            axis: null,
-            glare: false,
-            "max-glare": 1,
-            "glare-prerender": false,
-            reset: true,
-            gyroscope: true,
-            gyroscopeMinAngleX: -45,
-            gyroscopeMaxAngleX: 45,
-            gyroscopeMinAngleY: -45,
-            gyroscopeMaxAngleY: 45,
-        };
-    
-        let newSettings = {};
-        for (var property in defaultSettings) {
-            if (property in settings) {
-                newSettings[property] = settings[property];
-            } 
-            
-            else if (this.tilt.hasAttribute("data-tilt-" + property)) {
-                let attribute = this.tilt.getAttribute("data-tilt-" + property);
-                try {
-                newSettings[property] = JSON.parse(attribute);
-                } catch (e) {
-                newSettings[property] = attribute;
-                }
-        
-            } else {
-                newSettings[property] = defaultSettings[property];
-            }
-        }
-    
-        return newSettings;
-    }
-    
-    
-    render(e) {
+      updateElementPosition();
 
-        return( 
-            <div ref={elem => this.tilt = elem} {...this.props}></div>
-        )
-    }
+      const totalAngleX = gyroscopeMaxAngleX - gyroscopeMinAngleX;
+      const totalAngleY = gyroscopeMaxAngleY - gyroscopeMinAngleY;
 
+      const degreesPerPixelX = totalAngleX / width.current;
+      const degreesPerPixelY = totalAngleY / height.current;
+
+      const angleX = e.gamma - gyroscopeMinAngleX;
+      const angleY = e.beta - gyroscopeMinAngleY;
+
+      const posX = angleX / degreesPerPixelX;
+      const posY = angleY / degreesPerPixelY;
+
+      if (updateCall.current !== null) {
+        window.cancelAnimationFrame(updateCall.current);
+      }
+
+      e.nativeEvent = {
+        clientX: posX + left.current,
+        clientY: posY + top.current,
+      };
+
+      updateCall.current = requestAnimationFrame(() => update(e));
+    };
+
+    window.addEventListener('deviceorientation', onDeviceOrientation);
+
+    return () => {
+      window.removeEventListener('deviceorientation', onDeviceOrientation);
+    };
+  }, [
+    gyroscope,
+    gyroscopeMaxAngleX,
+    gyroscopeMaxAngleY,
+    gyroscopeMinAngleX,
+    gyroscopeMinAngleY,
+    update,
+  ]);
+
+  return (
+    <div
+      ref={element}
+      style={{
+        ...style,
+        ...styleState,
+      }}
+      className={className}
+      onMouseEnter={handleMouseEnter}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      {glare && (
+        <div
+          className="tilty-glare-wrapper"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            overflow: 'hidden',
+          }}
+        >
+          <div
+            className="tilty-glare"
+            style={{
+              ...glareStyle,
+              ...glareStyleState,
+            }}
+          />
+        </div>
+      )}
+      {children}
+    </div>
+  );
 }
 
 export default Tilty;
-
