@@ -9,3 +9,4 @@
 .jscsrc
 .npmignore
 webpack.config.js
+example
