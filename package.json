@@ -58,6 +58,6 @@
   "license": "MIT",
   "dependencies": {},
   "files": [
-    "build"
+    "dist"
   ]
 }
