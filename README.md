@@ -69,6 +69,16 @@ gyroscopeMaxAngleY:     45      // This is the top limit of the device angle on 
 onMouseEnter:           (e) => {} // A callback function for the mouse enter event on the Tilt component
 onMouseMove:            (e) => {} // A callback function for the mouse move event on the Tilt component
 onMouseLeave:           (e) => {} // A callback function for the mouse leave event on the Tilt component
+onTiltChange:           (e) => {} // A callback function for the custom tiltChange event on the Tilt component
+                                  // e = {
+                                  //   detail: {
+                                  //     tiltX: "-4.90",
+                                  //     tiltY: "3.03",
+                                  //     percentageX: 64,
+                                  //     percentageY: 58.666,
+                                  //     angle: 121.751281
+                                  //   }
+                                  // }
 ```
 
 **Example:**
@@ -94,7 +104,7 @@ In order to add a parallax effect to the element and it's child, you must add so
 
 ### Tilt Change Event
 
-You can pass callback functions for the 3 mouse events, `onMouseEnter`, `onMouseMove`, and `onMouseLeave`. This is changed in version 2 from having to manually add en event listener to the dom elements `tiltChange` event.
+You can pass callback functions for the 3 mouse events, `onMouseEnter`, `onMouseMove`, and `onMouseLeave`. There is also a custom callback `onTiltChange` for the `tiltChange` event that is called the `Tilty` component. This is changed in version 2 from having to manually add en event listener to the dom elements `tiltChange` event, however you can still do this if you'd like.
 
 #### New Way
 
@@ -108,6 +118,19 @@ You can pass callback functions for the 3 mouse events, `onMouseEnter`, `onMouse
   }}
   onMouseLeave={(e) => {
     console.log(e);
+  }}
+  onMouseLeave={(e) => {
+    console.log(e);
+  }}
+  onTiltChange={(e) => {
+    console.log(e.detail);
+    // {
+    //   tiltX: "-4.90",
+    //   tiltY: "3.03",
+    //   percentageX: 64,
+    //   percentageY: 58.666,
+    //   angle: 121.751281
+    // }
   }}
 >
   <div>This is my content</div>

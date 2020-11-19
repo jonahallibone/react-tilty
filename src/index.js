@@ -28,6 +28,7 @@ function Tilty({
   onMouseEnter = () => {},
   onMouseMove = () => {},
   onMouseLeave = () => {},
+  onTiltChange = () => {},
   children,
 }) {
   // VARIABLES
@@ -115,6 +116,13 @@ function Tilty({
       const tiltX = (reverseNum * (max / 2 - x * max)).toFixed(2);
       const tiltY = (reverseNum * (y * max - max / 2)).toFixed(2);
 
+      const angle =
+        Math.atan2(
+          e.nativeEvent.clientX - (left.current + width.current / 2),
+          -(e.nativeEvent.clientY - (top.current + height.current / 2))
+        ) *
+        (180 / Math.PI);
+
       const percentageX = x * 100;
       const percentageY = y * 100;
 
@@ -123,6 +131,7 @@ function Tilty({
         tiltY,
         percentageX,
         percentageY,
+        angle,
       };
     },
     [max, reverseNum]
@@ -149,9 +158,18 @@ function Tilty({
         }));
       }
 
+      // fire tiltChange event and callback
+      element.current.dispatchEvent(
+        new CustomEvent('tiltChange', {
+          detail: values,
+        })
+      );
+
+      onTiltChange({ detail: values });
+
       updateCall.current = null;
     },
-    [axis, getValues, glare, maxGlare, perspective, scale]
+    [axis, getValues, glare, maxGlare, perspective, scale, onTiltChange]
   );
 
   const setTransition = () => {
