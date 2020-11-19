@@ -2,9 +2,8 @@
 
 [![npm version][npm-badge]][npm-url]
 [![npm downloads][downloads-badge]][npm-url]
-[![dependencies Status][dependencies-badge]][npm-url]
 [![npm bundle size][size-badge]][npm-url]
-[![npm downloads][license-badge]][license-url]
+[![license][license-badge]][license-url]
 
 A React port of the [vanilla-tilt.js](https://micku7zu.github.io/vanilla-tilt.js/index.html) version of [Tilt.js](http://gijsroge.github.io/tilt.js/)
 
