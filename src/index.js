@@ -60,13 +60,15 @@ function Tilty({
   useEffect(() => {
     return () => {
       clearTimeout(transitionTimeout.current);
-      window.cancelAnimationFrame(updateCall.current);
+      if (typeof window !== 'undefined') {
+        window.cancelAnimationFrame(updateCall.current);
+      }
     };
   }, []);
 
   // GLARE
   useEffect(() => {
-    if (!glare) {
+    if (!glare || typeof window === 'undefined') {
       return () => {};
     }
 
@@ -169,20 +171,22 @@ function Tilty({
   };
 
   const handleReset = () => {
-    window.requestAnimationFrame(() => {
-      setStyle((prevStyle) => ({
-        ...prevStyle,
-        transform: `perspective(${perspective}px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`,
-      }));
-
-      if (glare) {
-        setGlareStyle((prevGlareStyle) => ({
-          ...prevGlareStyle,
-          transform: 'rotate(180deg) translate(-50%, -50%)',
-          opacity: 0,
+    if (typeof window !== 'undefined') {
+      window.requestAnimationFrame(() => {
+        setStyle((prevStyle) => ({
+          ...prevStyle,
+          transform: `perspective(${perspective}px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`,
         }));
-      }
-    });
+
+        if (glare) {
+          setGlareStyle((prevGlareStyle) => ({
+            ...prevGlareStyle,
+            transform: 'rotate(180deg) translate(-50%, -50%)',
+            opacity: 0,
+          }));
+        }
+      });
+    }
   };
 
   // MOUSE EVENTS
@@ -194,7 +198,7 @@ function Tilty({
 
   const handleMouseMove = (e) => {
     e.persist();
-    if (updateCall.current !== null) {
+    if (updateCall.current !== null && typeof window !== 'undefined') {
       window.cancelAnimationFrame(updateCall.current);
     }
     updateCall.current = requestAnimationFrame(() => update(e));
@@ -218,7 +222,11 @@ function Tilty({
     }
 
     const onDeviceOrientation = (e) => {
-      if (e.gamma === null || e.beta === null) {
+      if (
+        e.gamma === null ||
+        e.beta === null ||
+        typeof window === 'undefined'
+      ) {
         return;
       }
 
@@ -236,7 +244,7 @@ function Tilty({
       const posX = angleX / degreesPerPixelX;
       const posY = angleY / degreesPerPixelY;
 
-      if (updateCall.current !== null) {
+      if (updateCall.current !== null && typeof window !== 'undefined') {
         window.cancelAnimationFrame(updateCall.current);
       }
 
