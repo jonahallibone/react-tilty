@@ -2,14 +2,17 @@
   "name": "react-tilty",
   "version": "2.0.2",
   "description": "A React port of the JS component tilt.js",
-  "main": "dist/index.js",
+  "source": "src/index.js",
+  "main": "dist/react-tilty.js",
+  "module": "dist/react-tilty.esm.js",
+  "exports": "./dist/react-tilty.modern.js",
+  "unpkg": "dist/react-tilty.umd.js",
   "peerDependencies": {
     "react": ">=16.8.0"
   },
-  "unpkg": "dist/index.js",
   "scripts": {
-    "start": "webpack --watch",
-    "build": "webpack --mode=production"
+    "start": "microbundle watch",
+    "build": "microbundle build"
   },
   "author": {
     "name": "Jonah Allibone"
@@ -28,16 +31,6 @@
     "react-tilt.js"
   ],
   "devDependencies": {
-    "@babel/cli": "^7.12.1",
-    "@babel/core": "^7.12.3",
-    "@babel/plugin-proposal-object-rest-spread": "^7.12.1",
-    "@babel/plugin-transform-react-jsx": "^7.12.5",
-    "@babel/preset-env": "^7.12.1",
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "babel-loader": "^8.1.0",
-    "babel-plugin-transform-react-jsx": "^6.24.1",
-    "babel-preset-env": "^1.7.0",
     "eslint": "^7.12.1",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.15.0",
@@ -45,10 +38,9 @@
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "microbundle": "^0.13.0",
     "prettier": "^2.1.2",
-    "react": "^17.0.1",
-    "webpack": "^5.4.0",
-    "webpack-cli": "^4.2.0"
+    "react": "^17.0.1"
   },
   "repository": {
     "type": "git",
@@ -56,7 +48,6 @@
   },
   "homepage": "https://codesandbox.io/s/73rqoq599j",
   "license": "MIT",
-  "dependencies": {},
   "files": [
     "dist"
   ]
