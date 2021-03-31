@@ -8,8 +8,8 @@
   "exports": "./dist/react-tilty.modern.js",
   "unpkg": "dist/react-tilty.umd.js",
   "scripts": {
-    "start": "microbundle watch",
-    "build": "microbundle build"
+    "start": "microbundle watch --jsx React.createElement",
+    "build": "microbundle build --jsx React.createElement"
   },
   "author": {
     "name": "Jonah Allibone"
