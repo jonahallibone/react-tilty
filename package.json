@@ -1,6 +1,6 @@
 {
   "name": "react-tilty",
-  "version": "2.0.3-beta.2",
+  "version": "2.0.3",
   "description": "A React port of the JS component tilt.js",
   "source": "src/index.js",
   "main": "dist/react-tilty.js",
