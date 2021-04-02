@@ -8,12 +8,19 @@
   "exports": "./dist/react-tilty.modern.js",
   "unpkg": "dist/react-tilty.umd.js",
   "scripts": {
-    "start": "microbundle watch --jsx React.createElement",
-    "build": "microbundle build --jsx React.createElement"
+    "build": "microbundle build --jsx React.createElement",
+    "start": "concurrently \"npm:dev*\"",
+    "dev:component": "microbundle watch --jsx React.createElement",
+    "dev:example": "(cd example && npm start)",
+    "setup": "npm i && npm link && cd example && npm i && npm link react-tilty",
+    "prepublishOnly": "npm run build"
   },
   "author": {
     "name": "Jonah Allibone"
   },
+  "contributors": [
+    "Chris Sandvik"
+  ],
   "keywords": [
     "react",
     "component",
@@ -28,6 +35,7 @@
     "react-tilt.js"
   ],
   "devDependencies": {
+    "concurrently": "^6.0.0",
     "eslint": "^7.23.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.1.0",
@@ -36,7 +44,8 @@
     "eslint-plugin-react": "^7.23.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "microbundle": "^0.13.0",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "react-dom": "^17.0.2"
   },
   "peerDependencies": {
     "react": ">=16.8.0"
