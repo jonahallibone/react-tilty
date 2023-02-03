@@ -20,6 +20,12 @@ export interface TiltChangeDetails {
   angle: number;
 }
 
+export interface TiltChangeEvent {
+  detail: TiltChangeDetails;
+}
+
+export type TiltChangeEventHandler = (event: TiltChangeEvent) => void;
+
 export interface Coordinates {
   clientX: number;
   clientY: number;
@@ -205,7 +211,7 @@ export interface TiltyProps {
    * @param event - A custom event object with a `detail` property containing
    * tilt angles.
    */
-  onTiltChange?: (event: { detail: TiltChangeDetails }) => void;
+  onTiltChange?: TiltChangeEventHandler;
 
   /**
    * The children to render inside the `Tilt` component.

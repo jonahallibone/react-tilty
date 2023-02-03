@@ -212,13 +212,13 @@ on the wrapping div element.
 
 ---
 
-### `onTiltChange` (`(e: TiltChange) => void`)
+### `onTiltChange` (`(event: TiltChangeEvent) => void`)
 
 A callback function for the custom `tiltChange` event on the Tilt
 component.
 
 ```ts
-interface TiltChange {
+interface TiltChangeEvent {
   detail: {
     /** @example `"-4.90"` */
     tiltX: string;
