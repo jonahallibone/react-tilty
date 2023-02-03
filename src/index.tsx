@@ -5,8 +5,51 @@ import React, {
   useLayoutEffect,
   useCallback,
 } from 'react';
+import type { ReactNode, CSSProperties, MouseEventHandler } from 'react';
 
-function Tilty({
+const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
+export interface TiltChangeDetails {
+  tiltX: string;
+  tiltY: string;
+  percentageX: number;
+  percentageY: number;
+  angle: number;
+}
+
+export interface Coordinates {
+  clientX: number;
+  clientY: number;
+}
+
+export interface TiltyProps {
+  style?: CSSProperties;
+  className?: string;
+  reverse?: boolean;
+  max?: number;
+  perspective?: number;
+  easing?: string;
+  scale?: number;
+  speed?: number;
+  axis?: 'X' | 'Y' | null;
+  reset?: boolean;
+  glare?: boolean;
+  maxGlare?: number;
+  glareStyle?: CSSProperties;
+  gyroscope?: boolean;
+  gyroscopeMinAngleX?: number;
+  gyroscopeMaxAngleX?: number;
+  gyroscopeMinAngleY?: number;
+  gyroscopeMaxAngleY?: number;
+  onMouseEnter?: MouseEventHandler<HTMLDivElement>;
+  onMouseMove?: MouseEventHandler<HTMLDivElement>;
+  onMouseLeave?: MouseEventHandler<HTMLDivElement>;
+  onTiltChange?: (event: { detail: TiltChangeDetails }) => void;
+  children: ReactNode;
+}
+
+const Tilty = ({
   style = {},
   className = '',
   reverse = false,
@@ -15,7 +58,7 @@ function Tilty({
   easing = 'cubic-bezier(.03,.98,.52,.99)',
   scale = 1,
   speed = 300,
-  axis = '',
+  axis = null,
   reset = true,
   glare = false,
   maxGlare = 1,
@@ -30,13 +73,13 @@ function Tilty({
   onMouseLeave = () => {},
   onTiltChange = () => {},
   children,
-}) {
+}: TiltyProps) => {
   // VARIABLES
-  const [styleState, setStyle] = useState({
+  const [styleState, setStyle] = useState<CSSProperties>({
     position: 'relative',
     willChange: 'transform',
   });
-  const [glareStyleState, setGlareStyle] = useState({
+  const [glareStyleState, setGlareStyle] = useState<CSSProperties>({
     position: 'absolute',
     top: '50%',
     left: '50%',
@@ -47,25 +90,29 @@ function Tilty({
     opacity: '0',
   });
 
-  const width = useRef(0);
-  const height = useRef(0);
-  const left = useRef(0);
-  const top = useRef(0);
-  const transitionTimeout = useRef(null);
-  const updateCall = useRef(null);
+  const width = useRef<number>(0);
+  const height = useRef<number>(0);
+  const left = useRef<number>(0);
+  const top = useRef<number>(0);
+  const transitionTimeout = useRef<NodeJS.Timeout | null>(null);
+  const updateCall = useRef<number | null>(null);
+
   const reverseNum = reverse ? 1 : -1;
 
-  const element = useRef(null);
+  const element = useRef<HTMLDivElement>(null);
 
   // UNMOUNT
-  useEffect(() => {
-    return () => {
-      clearTimeout(transitionTimeout.current);
-      if (typeof window !== 'undefined') {
+  useEffect(
+    () => () => {
+      if (transitionTimeout.current) {
+        clearTimeout(transitionTimeout.current);
+      }
+      if (typeof window !== 'undefined' && updateCall.current) {
         window.cancelAnimationFrame(updateCall.current);
       }
-    };
-  }, []);
+    },
+    []
+  );
 
   // GLARE
   useEffect(() => {
@@ -74,11 +121,14 @@ function Tilty({
     }
 
     const updateGlareSize = () => {
-      setGlareStyle((prevGlareStyle) => ({
-        ...prevGlareStyle,
-        width: element.current.offsetWidth * 2,
-        height: element.current.offsetWidth * 2,
-      }));
+      const { current: currentEl } = element;
+      if (currentEl !== null) {
+        setGlareStyle((prevGlareStyle) => ({
+          ...prevGlareStyle,
+          width: currentEl.offsetWidth * 2,
+          height: currentEl.offsetWidth * 2,
+        }));
+      }
     };
 
     window.addEventListener('resize', updateGlareSize);
@@ -88,27 +138,33 @@ function Tilty({
     };
   }, [glare]);
 
-  useLayoutEffect(() => {
-    setGlareStyle((prevGlareStyle) => ({
-      ...prevGlareStyle,
-      width: element.current.offsetWidth * 2,
-      height: element.current.offsetWidth * 2,
-    }));
+  useIsomorphicLayoutEffect(() => {
+    const { current: currentEl } = element;
+    if (currentEl !== null) {
+      setGlareStyle((prevGlareStyle) => ({
+        ...prevGlareStyle,
+        width: currentEl.offsetWidth * 2,
+        height: currentEl.offsetWidth * 2,
+      }));
+    }
   }, []);
 
   // TILT FUNCTIONS
   const updateElementPosition = () => {
-    const rect = element.current.getBoundingClientRect();
-    width.current = element.current.offsetWidth;
-    height.current = element.current.offsetHeight;
-    left.current = rect.left;
-    top.current = rect.top;
+    const { current: currentEl } = element;
+    if (currentEl !== null) {
+      const rect = currentEl.getBoundingClientRect();
+      width.current = currentEl.offsetWidth;
+      height.current = currentEl.offsetHeight;
+      left.current = rect.left;
+      top.current = rect.top;
+    }
   };
 
   const getValues = useCallback(
-    (e) => {
-      let x = (e.nativeEvent.clientX - left.current) / width.current;
-      let y = (e.nativeEvent.clientY - top.current) / height.current;
+    (coordinates: Coordinates) => {
+      let x = (coordinates.clientX - left.current) / width.current;
+      let y = (coordinates.clientY - top.current) / height.current;
 
       x = Math.min(Math.max(x, 0), 1);
       y = Math.min(Math.max(y, 0), 1);
@@ -118,8 +174,8 @@ function Tilty({
 
       const angle =
         Math.atan2(
-          e.nativeEvent.clientX - (left.current + width.current / 2),
-          -(e.nativeEvent.clientY - (top.current + height.current / 2))
+          coordinates.clientX - (left.current + width.current / 2),
+          -(coordinates.clientY - (top.current + height.current / 2))
         ) *
         (180 / Math.PI);
 
@@ -138,15 +194,15 @@ function Tilty({
   );
 
   const update = useCallback(
-    (e) => {
-      const values = getValues(e);
+    (coordinates: Coordinates) => {
+      const values = getValues(coordinates);
 
       setStyle((prevStyle) => ({
         ...prevStyle,
         transform: `perspective(${perspective}px) rotateX(${
-          axis.toLowerCase() === 'x' ? 0 : values.tiltY
+          axis?.toLowerCase() === 'x' ? 0 : values.tiltY
         }deg) rotateY(${
-          axis.toLowerCase() === 'y' ? 0 : values.tiltX
+          axis?.toLowerCase() === 'y' ? 0 : values.tiltX
         }deg) scale3d(${scale}, ${scale}, ${scale})`,
       }));
 
@@ -159,11 +215,13 @@ function Tilty({
       }
 
       // fire tiltChange event and callback
-      element.current.dispatchEvent(
-        new CustomEvent('tiltChange', {
-          detail: values,
-        })
-      );
+      if (element.current) {
+        element.current.dispatchEvent(
+          new CustomEvent('tiltChange', {
+            detail: values,
+          })
+        );
+      }
 
       onTiltChange({ detail: values });
 
@@ -173,7 +231,10 @@ function Tilty({
   );
 
   const setTransition = () => {
-    clearTimeout(transitionTimeout.current);
+    if (transitionTimeout.current) {
+      clearTimeout(transitionTimeout.current);
+      transitionTimeout.current = null;
+    }
 
     setStyle((prevStyle) => ({
       ...prevStyle,
@@ -208,22 +269,26 @@ function Tilty({
   };
 
   // MOUSE EVENTS
-  const handleMouseEnter = (e) => {
+  const handleMouseEnter: MouseEventHandler<HTMLDivElement> = (e) => {
     updateElementPosition();
     setTransition();
     return onMouseEnter(e);
   };
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove: MouseEventHandler<HTMLDivElement> = (e) => {
     e.persist();
     if (updateCall.current !== null && typeof window !== 'undefined') {
       window.cancelAnimationFrame(updateCall.current);
     }
-    updateCall.current = requestAnimationFrame(() => update(e));
+    const coordinates = {
+      clientX: e.clientX,
+      clientY: e.clientY,
+    };
+    updateCall.current = requestAnimationFrame(() => update(coordinates));
     return onMouseMove(e);
   };
 
-  const handleMouseLeave = (e) => {
+  const handleMouseLeave: MouseEventHandler<HTMLDivElement> = (e) => {
     setTransition();
 
     if (reset) {
@@ -239,12 +304,8 @@ function Tilty({
       return () => {};
     }
 
-    const onDeviceOrientation = (e) => {
-      if (
-        e.gamma === null ||
-        e.beta === null ||
-        typeof window === 'undefined'
-      ) {
+    const onDeviceOrientation = (e: DeviceOrientationEvent) => {
+      if (typeof window === 'undefined' || !e.gamma || !e.beta) {
         return;
       }
 
@@ -262,16 +323,16 @@ function Tilty({
       const posX = angleX / degreesPerPixelX;
       const posY = angleY / degreesPerPixelY;
 
-      if (updateCall.current !== null && typeof window !== 'undefined') {
+      if (updateCall.current !== null) {
         window.cancelAnimationFrame(updateCall.current);
       }
 
-      e.nativeEvent = {
+      const coordinates = {
         clientX: posX + left.current,
         clientY: posY + top.current,
       };
 
-      updateCall.current = requestAnimationFrame(() => update(e));
+      updateCall.current = requestAnimationFrame(() => update(coordinates));
     };
 
     window.addEventListener('deviceorientation', onDeviceOrientation);
@@ -324,6 +385,6 @@ function Tilty({
       {children}
     </div>
   );
-}
+};
 
 export default Tilty;
