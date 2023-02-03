@@ -19,7 +19,9 @@ This package uses hooks internally so it has a requirement of React version 16.8
 
 This package is hosted on [npm](https://www.npmjs.com/package/react-tilty)
 
-`npm i react-tilty`
+```
+npm i react-tilty
+```
 
 ## How to Use
 
@@ -32,7 +34,9 @@ import Tilty from 'react-tilty';
 const App = () => {
   return (
     <div class="App">
-      <Tilty></Tilty>
+      <Tilty>
+        <div />
+      </Tilty>
     </div>
   );
 };
@@ -42,45 +46,203 @@ export default App;
 
 ## Props
 
-Tilty has a variety of options which can be passed as props. These have changed in version 2.0 so they are no longer nested in a `settings` object, or available through `data-` props.
+Tilty has a variety of options which can be passed as props. These have changed in version 2 so they are no longer nested in a `settings` object, or available through `data-` props.
 
-Here is a list of available options with their defaults:
+All props are optional besides `children`.
 
-```js
-style:                  {}      // A jsx style object that will be applied to the root element
-className:              ''      // A className to be added to the Tilty element
-reverse:                false   // Reverse the tilt direction
-max:                    35      // Max tilt rotation (degrees)
-perspective:            1000    // Transform perspective, the lower the more extreme the tilt gets.
-scale:                  1       // 2 = 200%, 1.5 = 150%, etc..
-speed:                  300     // Speed of the enter/exit transition
-axis:                   null    // What axis should be disabled, can be X or Y.
-reset:                  true    // If the tilt effect has to be reset on exit
-easing:                 "cubic-bezier(.03,.98,.52,.99)",    // Easing on enter/exit
-glare:                  false   // if it should have a "glare" effect
-maxGlare:               1       // the maximum "glare" opacity (1 = 100%, 0.5 = 50%)
-glareStyle:             {}      // A jsx style prop to be added to the glare element if glare is enabled
-gyroscope:              true    // Boolean to enable/disable device orientation detection
-gyroscopeMinAngleX:     -45     // This is the bottom limit of the device angle on X axis, meaning that a device rotated at this angle would tilt the element as if the mouse was on the left border of the element
-gyroscopeMaxAngleX:     45      // This is the top limit of the device angle on X axis, meaning that a device rotated at this angle would tilt the element as if the mouse was on the right border of the element
-gyroscopeMinAngleY:     -45     // This is the bottom limit of the device angle on Y axis, meaning that a device rotated at this angle would tilt the element as if the mouse was on the top border of the element
-gyroscopeMaxAngleY:     45      // This is the top limit of the device angle on Y axis, meaning that a device rotated at this angle would tilt the element as if the mouse was on the bottom border of the element
-onMouseEnter:           (e) => {} // A callback function for the mouse enter event on the Tilt component
-onMouseMove:            (e) => {} // A callback function for the mouse move event on the Tilt component
-onMouseLeave:           (e) => {} // A callback function for the mouse leave event on the Tilt component
-onTiltChange:           (e) => {} // A callback function for the custom tiltChange event on the Tilt component
-                                  // e = {
-                                  //   detail: {
-                                  //     tiltX: "-4.90",
-                                  //     tiltY: "3.03",
-                                  //     percentageX: 64,
-                                  //     percentageY: 58.666,
-                                  //     angle: 121.751281
-                                  //   }
-                                  // }
+---
+
+### `className` (`string`)
+
+A class name to be applied to the component's wrapper div.
+
+---
+
+### `style` (`React.CSSProperties`)
+
+React styles to be applied to the component's wrapper div.
+
+---
+
+### `reverse` (`boolean`) - Default: `false`
+
+Whether or not to invert the tilt direction.
+
+---
+
+### `max` (`number`) - Default: `35`
+
+The maximum tilt angle in degrees.
+
+Must be between `0` and `180`.
+
+---
+
+### `perspective` (`number`) - Default: `1000`
+
+The perspective of the tilt transform. Lower values mean the tilt effect
+is more extreme.
+
+---
+
+### `easing` (`string`) - Default: `'cubic-bezier(0.03,0.98,0.52,0.99)'`
+
+The CSS easing function to use when the mouse enters or leaves the tilt
+container.
+
+---
+
+### `speed` (`number`) - Default: `300`
+
+The time in milliseconds the enter/exit transitions will take.
+
+---
+
+### `scale` (`number`) - Default: `1`
+
+The amount to scale the tilt container while hovered, relative to its
+normal size.
+
+`1.5` = 150%, `0.5` = 50%, etc.
+
+---
+
+### `axis` (`"X"` | `"Y"`)
+
+Which axis to disable tilting on, if any.
+
+---
+
+### `reset` (`boolean`) - Default: `true`
+
+Whether or not to reset the tilt effect when the mouse leaves the tilt
+container.
+
+---
+
+### `glare` (`boolean`) - Default: `false`
+
+Whether or not to add a light glare effect to the tilt container.
+
+---
+
+### `maxGlare` (`number`) - Default: `1`
+
+The maximum opacity of the glare effect.
+
+Must be between `0` and `1`.
+
+---
+
+### `glareStyle` (`React.CSSProperties`)
+
+React styles to be applied to the glare effect component.
+
+---
+
+### `gyroscope` (`boolean`) - Default: `true`
+
+Whether or not to enable tilting on device orientation changes. This only
+works on devices that support the [`DeviceOrientationEvent`](https://developer.mozilla.org/en-US/docs/Web/API/DeviceOrientationEvent)
+API (e.g. mobile devices).
+
+---
+
+### `gyroscopeMinAngleX` (`number`) - Default: `-45`
+
+This is the bottom limit of the device angle on X axis, meaning that a
+device rotated at this angle would tilt the element as if the mouse was on
+the left border of the element.
+
+Must be between `-180` and `0`.
+
+---
+
+### `gyroscopeMaxAngleX` (`number`) - Default: `45`
+
+This is the top limit of the device angle on X axis, meaning that a device
+rotated at this angle would tilt the element as if the mouse was on the
+right border of the element.
+
+Must be between `0` and `180`.
+
+---
+
+### `gyroscopeMinAngleY` (`number`) - Default `-45`
+
+This is the bottom limit of the device angle on Y axis, meaning that a
+device rotated at this angle would tilt the element as if the mouse was on
+the top border of the element.
+
+Must be between `-180` and `0`.
+
+---
+
+### `gyroscopeMaxAngleY` (`number`) - Default: `45`
+
+This is the top limit of the device angle on Y axis, meaning that a device
+rotated at this angle would tilt the element as if the mouse was on the
+bottom border of the element.
+
+Must be between `0` and `180`.
+
+---
+
+### `onMouseEnter` (`React.MouseEventHandler<HTMLDivElement>`)
+
+A callback function for the
+[`MouseEnter`](https://reactjs.org/docs/events.html#mouse-event) synthetic event
+on the wrapping div element.
+
+---
+
+### `onMouseMove` (`React.MouseEventHandler<HTMLDivElement>`)
+
+A callback function for the
+[`MouseMove`](https://reactjs.org/docs/events.html#mouse-event) synthetic event
+on the wrapping div element.
+
+---
+
+### `onMouseLeave` (`React.MouseEventHandler<HTMLDivElement>`)
+
+A callback function for the
+[`MouseLeave`](https://reactjs.org/docs/events.html#mouse-event) synthetic event
+on the wrapping div element.
+
+---
+
+### `onTiltChange` (`(e: TiltChange) => void`)
+
+A callback function for the custom `tiltChange` event on the Tilt
+component.
+
+```ts
+interface TiltChange {
+  detail: {
+    /** @example `"-4.90"` */
+    tiltX: string;
+    /** @example `"3.03"` */
+    tiltY: string;
+    /** @example `64` */
+    percentageX: number;
+    /** @example `58.62` */
+    percentageY: number;
+    /** @example `121.751281` */
+    angle: number;
+  };
+}
 ```
 
-**Example:**
+---
+
+### `children` (`ReactNode`)
+
+The children to render inside the `Tilt` component.
+
+---
+
+## Example
 
 ```jsx
 <Tilty reverse axis="x" scale={1.2} perspective={900} reset={false}>
