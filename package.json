@@ -7,8 +7,10 @@
   "module": "dist/react-tilty.esm.js",
   "exports": "./dist/react-tilty.modern.js",
   "unpkg": "dist/react-tilty.umd.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "build": "microbundle build --jsx React.createElement",
+    "postbuild": "copyfiles -f src/index.d.ts dist",
     "start": "concurrently \"npm:dev*\"",
     "dev:component": "microbundle watch --jsx React.createElement",
     "dev:example": "(cd example && npm start)",
@@ -36,6 +38,8 @@
   ],
   "devDependencies": {
     "concurrently": "^6.0.0",
+    "copyfiles": "^2.4.1",
+    "csstype": "^3.1.1",
     "eslint": "^7.23.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.1.0",
