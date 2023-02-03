@@ -5,16 +5,18 @@ import React, {
   useLayoutEffect,
   useCallback,
 } from 'react';
-import type { ReactNode, CSSProperties, MouseEventHandler } from 'react';
-
-const useIsomorphicLayoutEffect =
-  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+import type { CSSProperties, MouseEventHandler, ReactNode } from 'react';
 
 export interface TiltChangeDetails {
+  /** @example `"-4.90"` */
   tiltX: string;
+  /** @example `"3.03"` */
   tiltY: string;
+  /** @example `64` */
   percentageX: number;
+  /** @example `58.62` */
   percentageY: number;
+  /** @example `121.751281` */
   angle: number;
 }
 
@@ -24,30 +26,195 @@ export interface Coordinates {
 }
 
 export interface TiltyProps {
-  style?: CSSProperties;
+  /**
+   * A class name to be applied to the component's wrapper div.
+   */
   className?: string;
+
+  /**
+   * React styles to be applied to the component's wrapper div.
+   */
+  style?: CSSProperties;
+
+  /**
+   * Whether or not to invert the tilt direction.
+   *
+   * @defaultValue `false`
+   */
   reverse?: boolean;
+
+  /**
+   * The maximum tilt angle in degrees.
+   *
+   * Must be between `0` and `180`.
+   *
+   * @defaultValue `35`
+   */
   max?: number;
+
+  /**
+   * The perspective of the tilt transform. Lower values mean the tilt effect
+   * is more extreme.
+   *
+   * @defaultValue `1000`
+   */
   perspective?: number;
+
+  /**
+   * The CSS easing function to use when the mouse enters or leaves the tilt
+   * container.
+   *
+   * @defaultValue `'cubic-bezier(0.03,0.98,0.52,0.99)'`
+   */
   easing?: string;
-  scale?: number;
+
+  /**
+   * The time in milliseconds the enter/exit transitions will take.
+   *
+   * @defaultValue `300`
+   */
   speed?: number;
-  axis?: 'X' | 'Y' | null;
+
+  /**
+   * The amount to scale the tilt container while hovered, relative to its
+   * normal size.
+   *
+   * `1` = 100%, `0.5` = 50%, etc.
+   *
+   * @defaultValue `1`
+   */
+  scale?: number;
+
+  /**
+   * Which axis to disable tilting on, if any.
+   */
+  axis?: 'X' | 'Y';
+
+  /**
+   * Whether or not to reset the tilt effect when the mouse leaves the tilt
+   * container.
+   *
+   * @defaultValue `true`
+   */
   reset?: boolean;
+
+  /**
+   * Whether or not to add a light glare effect to the tilt container.
+   *
+   * @defaultValue `false`
+   */
   glare?: boolean;
+
+  /**
+   * The maximum opacity of the glare effect.
+   *
+   * Must be between `0` and `1`.
+   *
+   * @defaultValue `1`
+   */
   maxGlare?: number;
+
+  /**
+   * React styles to be applied to the glare effect component.
+   */
   glareStyle?: CSSProperties;
+
+  /**
+   * Whether or not to enable device orientation (gyroscope) support. This only
+   * works on devices that support the DeviceOrientationEvent API (e.g. mobile
+   * devices).
+   *
+   * @defaultValue `true`
+   *
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/DeviceOrientationEvent}
+   */
   gyroscope?: boolean;
+
+  /**
+   * This is the bottom limit of the device angle on X axis, meaning that a
+   * device rotated at this angle would tilt the element as if the mouse was on
+   * the left border of the element.
+   *
+   * Must be between `-180` and `0`.
+   *
+   * @defaultValue `-45`
+   */
   gyroscopeMinAngleX?: number;
+
+  /**
+   * This is the top limit of the device angle on X axis, meaning that a device
+   * rotated at this angle would tilt the element as if the mouse was on the
+   * right border of the element.
+   *
+   * Must be between `0` and `180`.
+   *
+   * @defaultValue `45`
+   */
   gyroscopeMaxAngleX?: number;
+
+  /**
+   * This is the bottom limit of the device angle on Y axis, meaning that a
+   * device rotated at this angle would tilt the element as if the mouse was on
+   * the top border of the element.
+   *
+   * Must be between `-180` and `0`.
+   *
+   * @defaultValue `-45`
+   */
   gyroscopeMinAngleY?: number;
+
+  /**
+   * his is the top limit of the device angle on Y axis, meaning that a device
+   * rotated at this angle would tilt the element as if the mouse was on the
+   * bottom border of the element.
+   *
+   * Must be between `0` and `180`.
+   *
+   * @defaultValue `45`
+   */
   gyroscopeMaxAngleY?: number;
+
+  /**
+   * A callback function for the `MouseEnter` synthetic event on the wrapping
+   * div element.
+   *
+   * @see {@link https://reactjs.org/docs/events.html#mouse-events}
+   */
   onMouseEnter?: MouseEventHandler<HTMLDivElement>;
+
+  /**
+   * A callback function for the `MouseMove` synthetic event on the wrapping
+   * div element.
+   *
+   * @see {@link https://reactjs.org/docs/events.html#mouse-events}
+   */
   onMouseMove?: MouseEventHandler<HTMLDivElement>;
+
+  /**
+   * A callback function for the `MouseLeave` synthetic event on the wrapping
+   * div element.
+   *
+   * @see {@link https://reactjs.org/docs/events.html#mouse-events}
+   */
   onMouseLeave?: MouseEventHandler<HTMLDivElement>;
+
+  /**
+   * A callback function for the custom `tiltChange` event on the Tilt
+   * component.
+   *
+   * @param event - A custom event object with a `detail` property containing
+   * tilt angles.
+   */
   onTiltChange?: (event: { detail: TiltChangeDetails }) => void;
+
+  /**
+   * The children to render inside the `Tilt` component.
+   */
   children: ReactNode;
 }
+
+const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 const Tilty = ({
   style = {},
@@ -55,10 +222,10 @@ const Tilty = ({
   reverse = false,
   max = 35,
   perspective = 1000,
-  easing = 'cubic-bezier(.03,.98,.52,.99)',
-  scale = 1,
+  easing = 'cubic-bezier(0.03,0.98,0.52,0.99)',
   speed = 300,
-  axis = null,
+  scale = 1,
+  axis,
   reset = true,
   glare = false,
   maxGlare = 1,

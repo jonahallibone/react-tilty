@@ -30,8 +30,8 @@
     "build": "microbundle build --jsx React.createElement",
     "dev": "microbundle watch --jsx React.createElement",
     "lint": "eslint src",
-    "prepublishOnly": "npm run build",
-    "start": "concurrently \"npm:dev*\""
+    "prepublishOnly": "npm run lint && npm run build",
+    "postversion": "git push --tags"
   },
   "peerDependencies": {
     "react": ">=16.8.0"
@@ -50,6 +50,7 @@
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-tsdoc": "^0.2.17",
     "microbundle": "^0.15.1",
     "prettier": "^2.8.3",
     "prettier-package-json": "^2.8.0",
